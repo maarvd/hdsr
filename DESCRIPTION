@@ -11,3 +11,4 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/maarvd/hdsr
 BugReports: https://github.com/maarvd/hdsr/issues
+RoxygenNote: 7.2.1
