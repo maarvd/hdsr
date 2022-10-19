@@ -8,18 +8,17 @@
 #' @export
 create_seepage <- function(rast, waterbalance){
   #read shape
-  aoi <- st_read(paste0("output/", waterbalance, "/spatial/shape.gpkg"))
+  aoi <- sf::st_read(paste0("output/", waterbalance, "/spatial/shape.gpkg"))
 
   #load seepage
   seep <- terra::rast(rast)
 
   #crop
-  seep <- terra::crop(seep, vect(aoi))
+  seep <- terra::crop(seep, terra::vect(aoi))
 
   #mask
-  seep <- terra::mask(seep, vect(aoi))
+  seep <- terra::mask(seep, terra::vect(aoi))
 
   #write
   terra::writeRaster(seep, filename = paste0("output/", waterbalance, "/spatial/seepage.tiff"), overwrite = TRUE)
 }
-

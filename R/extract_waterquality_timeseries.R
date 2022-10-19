@@ -64,6 +64,24 @@ extract_waterquality_timeseries <- function(filepath, metingen_rownr, waterbalan
   #add names
   names(stof) <- paste0(stoffen_tabel$locatie, "_", stoffen_tabel$param)
 
+  #extract the names of inlaten and waterkwaliteitsmeetpunten
+  meetlocatie1 = readxl::read_excel(path = filepath, sheet = "Metingen", range = "AO13", col_names = FALSE, col_types = "text") |> unlist()
+  meetlocatie2 =  readxl::read_excel(path = filepath, sheet = "Metingen", range = "AV13", col_names = FALSE, col_types = "text") |> unlist()
+  inlaat1 = readxl::read_excel(path = filepath, sheet = "Metingen", range = "BC13", col_names = FALSE, col_types = "text") |> unlist()
+  inlaat2 = readxl::read_excel(path = filepath, sheet = "Metingen", range = "CB13", col_names = FALSE, col_types = "text") |> unlist()
+  inlaat3 = readxl::read_excel(path = filepath, sheet = "Metingen", range = "DA13", col_names = FALSE, col_types = "text") |> unlist()
+
+  location_names <- data.table(
+    meetlocatie1 = ifelse(!is.null(meetlocatie1), meetlocatie1[[1]], NA),
+    meetlocatie2 = ifelse(!is.null(meetlocatie2), meetlocatie2[[1]], NA),
+    inlaat1 = ifelse(!is.null(inlaat1), inlaat1[[1]], NA),
+    inlaat2 = ifelse(!is.null(inlaat2), inlaat2[[1]], NA),
+    inlaat3 = ifelse(!is.null(inlaat3), inlaat3[[1]], NA)
+  )
+
+  #add location names to list
+  stof <- c(stof, list("location_names" = location_names))
+
   #save
   saveRDS(stof, file = paste0("output/", waterbalance, "/raw/series_waterkwaliteit.RDS"))
 }
