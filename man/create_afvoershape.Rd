@@ -4,12 +4,10 @@
 \alias{create_afvoershape}
 \title{Subset afvoershape of waterbalance of interest}
 \usage{
-create_afvoershape(sf, filename, savedir)
+create_afvoershape(sf, waterbalance)
 }
 \arguments{
 \item{sf}{shapefile containing all afvoergebieden}
-
-\item{savedir}{directory to save results to}
 
 \item{waterbalance}{code of waterbalance (e.g. KRWO_04_Kockengen)}
 }

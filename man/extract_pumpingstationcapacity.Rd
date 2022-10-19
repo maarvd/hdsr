@@ -4,12 +4,12 @@
 \alias{extract_pumpingstationcapacity}
 \title{Extract pumping station capacity}
 \usage{
-extract_pumpingstationcapacity(filepath, savedir)
+extract_pumpingstationcapacity(filepath, waterbalance)
 }
 \arguments{
 \item{filepath}{filepath of waterbalance excel document}
 
-\item{savedir}{directory to save results to}
+\item{waterbalance}{code of waterbalance (e.g. KRWO_04_Kockengen)}
 }
 \description{
 Extract pumping station capacity

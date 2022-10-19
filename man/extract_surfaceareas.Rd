@@ -4,12 +4,12 @@
 \alias{extract_surfaceareas}
 \title{Extract surface areas}
 \usage{
-extract_surfaceareas(filepath, savedir)
+extract_surfaceareas(filepath, waterbalance)
 }
 \arguments{
 \item{filepath}{filepath of waterbalance excel document}
 
-\item{savedir}{directory to save results to}
+\item{waterbalance}{code of waterbalance (e.g. KRWO_04_Kockengen)}
 }
 \description{
 Extract surface areas

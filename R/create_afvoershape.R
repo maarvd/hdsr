@@ -11,7 +11,7 @@ create_afvoershape <- function(sf, waterbalance){
   afvoer.shape <- sf |> st_transform(28992) |> as.data.table()
 
   #convert filename to waterbalans.id
-  waterbalans.id <- sapply(strsplit(filename, "_"), `[`, 2)
+  waterbalans.id <- sapply(strsplit(waterbalance, "_"), `[`, 2)
   waterbalans.id <- str_pad(waterbalans.id, 4, pad = "0")
 
   #select rel shape

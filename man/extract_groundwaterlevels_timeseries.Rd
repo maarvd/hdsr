@@ -4,14 +4,14 @@
 \alias{extract_groundwaterlevels_timeseries}
 \title{Extract groundwater levels as timeseries}
 \usage{
-extract_groundwaterlevels_timeseries(filepath, metingen_rownr, savedir)
+extract_groundwaterlevels_timeseries(filepath, metingen_rownr, waterbalance)
 }
 \arguments{
 \item{filepath}{filepath of waterbalance excel document}
 
 \item{metingen_rownr}{amount of rows in sheet "metingen"}
 
-\item{savedir}{directory to save results to}
+\item{waterbalance}{code of waterbalance (e.g. KRWO_04_Kockengen)}
 }
 \description{
 Extract groundwater levels as timeseries

@@ -4,12 +4,12 @@
 \alias{extract_waterlevelregime}
 \title{Extract waterlevel regime}
 \usage{
-extract_waterlevelregime(filepath, savedir)
+extract_waterlevelregime(filepath, waterbalance)
 }
 \arguments{
 \item{filepath}{filepath of waterbalance excel document}
 
-\item{savedir}{directory to save results to}
+\item{waterbalance}{code of waterbalance (e.g. KRWO_04_Kockengen)}
 }
 \description{
 Extract waterlevel regime

@@ -4,7 +4,6 @@
 #' @param filepath filepath of waterbalance excel document
 #' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
-#'
 #' @export
 extract_surfaceareas <- function(filepath, waterbalance){
   #read settings of bodembakjes
