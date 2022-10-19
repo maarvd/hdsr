@@ -12,3 +12,4 @@ LazyData: true
 URL: https://github.com/maarvd/hdsr
 BugReports: https://github.com/maarvd/hdsr/issues
 RoxygenNote: 7.2.1
+Imports: readxl, data.table, janitor, lubridate, dplyr, stringr, sf, terra
