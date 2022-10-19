@@ -2,11 +2,11 @@
 #'
 #'
 #' @param filepath filepath of waterbalance excel document
-#' @param savedir directory to save results to
+#' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
 #'
 #' @export
-extract_surfaceareas <- function(filepath, savedir){
+extract_surfaceareas <- function(filepath, waterbalance){
   #read settings of bodembakjes
   systeem_area1 <- suppressMessages(read_excel(filepath, sheet = "Settings", range = "R3:T17", col_names = FALSE)) |> as.data.table()
   systeem_area2 <-  suppressMessages(read_excel(filepath, sheet = "Settings", range = "V3:X17", col_names = FALSE)) |> as.data.table()
@@ -91,6 +91,6 @@ extract_surfaceareas <- function(filepath, savedir){
   }
 
   #save
-  saveRDS(combined, file = paste0(savedir, "/opp.RDS"))
+  saveRDS(combined, file = paste0("output/", waterbalance, "/raw/opp.RDS"))
 }#extracts surface areas
 

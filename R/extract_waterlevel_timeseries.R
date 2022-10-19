@@ -3,11 +3,11 @@
 #'
 #' @param filepath filepath of waterbalance excel document
 #' @param metingen_rownr amount of rows in sheet "metingen"
-#' @param savedir directory to save results to
+#' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
 #'
 #' @export
-extract_waterlevel_timeseries <- function(filepath, metingen_rownr, savedir){
+extract_waterlevel_timeseries <- function(filepath, metingen_rownr, waterbalance){
   #read
   waterpeil <- suppressMessages(readxl::read_excel(filepath,
                                                    sheet = "Metingen",
@@ -19,5 +19,5 @@ extract_waterlevel_timeseries <- function(filepath, metingen_rownr, savedir){
   waterpeil[, date := ymd(date)]
 
   #save
-  saveRDS(waterpeil, file = paste0(savedir, "/series_waterpeil.RDS"))
+  saveRDS(waterpeil, file = paste0("output/", waterbalance, "/raw/series_waterpeil.RDS"))
 }

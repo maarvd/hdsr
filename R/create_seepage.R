@@ -20,6 +20,6 @@ create_seepage <- function(rast, waterbalance){
   seep <- terra::mask(seep, vect(aoi))
 
   #write
-  terra::writeRaster(seep, filename = paste0("output/", filename, "/spatial/seepage.tiff"), overwrite = TRUE)
+  terra::writeRaster(seep, filename = paste0("output/", waterbalance, "/spatial/seepage.tiff"), overwrite = TRUE)
 }
 

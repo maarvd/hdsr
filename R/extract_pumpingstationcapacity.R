@@ -2,11 +2,11 @@
 #'
 #'
 #' @param filepath filepath of waterbalance excel document
-#' @param savedir directory to save results to
+#' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
 #'
 #' @export
-extract_pumpingstationcapacity <- function(filepath, savedir){
+extract_pumpingstationcapacity <- function(filepath, waterbalance){
   #read
   gemaalcapaciteit <- suppressMessages(read_excel(filepath, sheet = "WAT", range = "B15:D16", col_names = FALSE)) |> as.data.table()
 
@@ -20,6 +20,6 @@ extract_pumpingstationcapacity <- function(filepath, savedir){
                                  gemaalcapaciteit[name == "gemaalcapaciteit (m3/min)"]$value * 60 * 24))
 
   #save
-  saveRDS(tidied, file = paste0(savedir, "/gemaalcapaciteit.RDS"))
+  saveRDS(tidied, file = paste0("output/", waterbalance,"/raw/gemaalcapaciteit.RDS"))
 
 }

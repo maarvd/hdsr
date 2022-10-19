@@ -3,11 +3,11 @@
 #'
 #' @param filepath filepath of waterbalance excel document
 #' @param metingen_rownr amount of rows in sheet "metingen"
-#' @param savedir directory to save results to
+#' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
 #'
 #' @export
-extract_groundwaterlevels_timeseries <- function(filepath, metingen_rownr, savedir){
+extract_groundwaterlevels_timeseries <- function(filepath, metingen_rownr, waterbalance){
   #read
   grondwater1 <- suppressMessages(readxl::read_excel(filepath,
                                                      sheet = "Metingen",
@@ -36,5 +36,5 @@ extract_groundwaterlevels_timeseries <- function(filepath, metingen_rownr, saved
   })
 
   #save
-  saveRDS(merged.tidied, file = paste0(savedir, "/series_grondwaterstand.RDS"))
+  saveRDS(merged.tidied, file = paste0("output/", waterbalance, "/raw/series_grondwaterstand.RDS"))
 }

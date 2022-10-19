@@ -2,11 +2,11 @@
 #'
 #'
 #' @param filepath filepath of waterbalance excel document
-#' @param savedir directory to save results to
+#' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
 #'
 #' @export
-extract_waterlevelregime <- function(filepath, savedir){
+extract_waterlevelregime <- function(filepath, waterbalance){
   #read
   peil <- suppressMessages(read_excel(filepath, sheet = "WAT", range = "B15:D33", col_names = FALSE, col_types = "list")) |> as.data.table()
 
@@ -70,5 +70,5 @@ extract_waterlevelregime <- function(filepath, savedir){
   }
 
   #save
-  saveRDS(peilregime, file = paste0(savedir, "/peilregime.RDS"))
+  saveRDS(peilregime, file = paste0("output/", waterbalance, "/raw/peilregime.RDS"))
 }

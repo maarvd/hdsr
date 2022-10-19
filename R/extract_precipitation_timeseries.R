@@ -3,11 +3,11 @@
 #'
 #' @param filepath filepath of waterbalance excel document
 #' @param metingen_rownr amount of rows in sheet "metingen"
-#' @param savedir directory to save results to
+#' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
 #' @export
 
-extract_precipitation_timeseries <- function(filepath, metingen_rownr, savedir){
+extract_precipitation_timeseries <- function(filepath, metingen_rownr, waterbalance){
   #read neerslag/verdamping
   prec <- readxl::read_excel(filepath,
                              sheet = "Metingen",
@@ -27,6 +27,6 @@ extract_precipitation_timeseries <- function(filepath, metingen_rownr, savedir){
   prec[, date := ymd(date)]
 
   #save
-  saveRDS(prec, file = paste0(savedir, "/series_precipitation.RDS"))
+  saveRDS(prec, file = paste0("output/", waterbalance, "/raw/series_precipitation.RDS"))
 }
 

@@ -3,11 +3,10 @@
 #'
 #' @param filepath filepath of waterbalance excel document
 #' @param metingen_rownr amount of rows in sheet "metingen"
-#' @param savedir directory to save results to
-#'
+#' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
 #' @export
-extract_waterquality_timeseries <- function(filepath, metingen_rownr, savedir){
+extract_waterquality_timeseries <- function(filepath, metingen_rownr, waterbalance){
   #create table containing names and ranges
   stoffen_tabel <- data.table(locatie = c(rep("meetlocatie1", 3), rep("meetlocatie2", 3), rep("inlaat1", 3), rep("inlaat2", 3), rep("inlaat3", 3)),
                               param = rep(c("cl", "n", "p"), 5),
@@ -66,5 +65,5 @@ extract_waterquality_timeseries <- function(filepath, metingen_rownr, savedir){
   names(stof) <- paste0(stoffen_tabel$locatie, "_", stoffen_tabel$param)
 
   #save
-  saveRDS(stof, file = paste0(savedir, "/series_waterkwaliteit.RDS"))
+  saveRDS(stof, file = paste0("output/", waterbalance, "/raw/series_waterkwaliteit.RDS"))
 }

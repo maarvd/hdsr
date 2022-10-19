@@ -3,14 +3,10 @@
 #'
 #' @param sf shapefile containing all afvoergebieden
 #' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
-#' @param savedir directory to save results to
 #'
 #'
 #' @export
-create_afvoershape <- function(sf, filename, savedir){
-  #create folder if not existing
-  if(!dir.exists(paste0(savedir, "/spatial"))){dir.create(paste0(savedir, "/spatial"))}
-
+create_afvoershape <- function(sf, waterbalance){
   #load afvoer.shape
   afvoer.shape <- sf |> st_transform(28992) |> as.data.table()
 
@@ -22,6 +18,6 @@ create_afvoershape <- function(sf, filename, savedir){
   rel.shape <- afvoer.shape[CODE == paste0("AFVGEB", waterbalans.id)] |> st_as_sf()
 
   #save shape
-  st_write(rel.shape, dsn = paste0(savedir, "/spatial/shape.gpkg"), append = FALSE)
+  st_write(rel.shape, dsn = paste0("output/", waterbalance, "/spatial/shape.gpkg"), append = FALSE)
 }
 
