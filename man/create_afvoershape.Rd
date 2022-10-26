@@ -4,7 +4,7 @@
 \alias{create_afvoershape}
 \title{Subset afvoershape of waterbalance of interest}
 \usage{
-create_afvoershape(sf, waterbalance)
+create_afvoershape(sf, waterbalance, check)
 }
 \arguments{
 \item{sf}{shapefile containing all afvoergebieden (retrieve from data(afvoergebieden))}
