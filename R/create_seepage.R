@@ -29,7 +29,8 @@ create_seepage <- function(waterbalance){
 
   #save tiff
   download.file(url = seep_url,
-                destfile = paste0("output/", waterbalance, "/spatial/LHM4.1_seepinf_2011-2018_mmday.tiff"))
+                destfile = paste0("output/", waterbalance, "/spatial/LHM4.1_seepinf_2011-2018_mmday.tiff"),
+                method = "curl")
 
 
 
