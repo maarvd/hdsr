@@ -7,7 +7,7 @@
 format_surfaceareas(waterbalance)
 }
 \arguments{
-\item{waterbalance}{acode of waterbalance (e.g. KRWO_04_Kockengen)}
+\item{waterbalance}{code of waterbalance (e.g. KRWO_04_Kockengen)}
 }
 \description{
 Format extracted surface area data to Artesia format

@@ -1,7 +1,7 @@
 #' Format extracted surface area data to Artesia format
 #'
 #'
-#' @param waterbalance acode of waterbalance (e.g. KRWO_04_Kockengen)
+#' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
 #'
 #' @export

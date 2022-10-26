@@ -5,7 +5,7 @@
 #' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
 #'
-
+#' @export
 extract_other <- function(filepath, waterbalance){
   #Settings
   hoogte_slootbodem <- suppressMessages(read_excel(filepath, sheet = "Settings", range = "P23", col_names = FALSE, col_types = "list"))[[1]] |> unlist()
