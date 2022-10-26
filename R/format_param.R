@@ -3,6 +3,9 @@
 #'
 #' @param waterbalance acode of waterbalance (e.g. KRWO_04_Kockengen)
 #'
+#' @import data.table
+#' @importFrom lubridate ymd
+#' @importFrom tidyr fill
 #'
 #' @export
 format_param <- function(waterbalance){

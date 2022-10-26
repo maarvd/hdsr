@@ -5,6 +5,11 @@
 #' @param metingen_rownr amount of rows in sheet "metingen"
 #' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
+#' @import data.table
+#' @importFrom readxl read_excel
+#' @importFrom lubridate ymd
+#' @importFrom janitor remove_empty
+#'
 #' @export
 
 extract_precipitation_timeseries <- function(filepath, metingen_rownr, waterbalance){

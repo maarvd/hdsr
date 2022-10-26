@@ -4,6 +4,9 @@
 #' @param sf shapefile containing all afvoergebieden
 #' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
+#' @import data.table
+#' @importFrom sf st_transform st_as_sf st_write
+#' @importFrom stringr str_pad
 #'
 #' @export
 create_afvoershape <- function(sf, waterbalance){

@@ -4,6 +4,8 @@
 #' @param filepath filepath of waterbalance excel document
 #' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
+#' @import data.table
+#' @importFrom readxl read_excel
 #'
 #' @export
 extract_other <- function(filepath, waterbalance){

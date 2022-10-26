@@ -3,6 +3,7 @@
 #'
 #' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
+#' @import data.table
 #'
 #' @export
 format_series_nitrogen <- function(waterbalance){

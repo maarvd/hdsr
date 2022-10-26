@@ -5,6 +5,9 @@
 #' @param metingen_rownr amount of rows in sheet "metingen"
 #' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
+#' @import data.table
+#' @importFrom lubridate ymd
+#' @importFrom readxl read_excel
 #'
 #' @export
 extract_waterlevel_timeseries <- function(filepath, metingen_rownr, waterbalance){

@@ -3,6 +3,8 @@
 #'
 #' @param waterbalance code of waterbalance (e.g. KRWO_04_Kockengen)
 #'
+#' @import data.table
+#' @importFrom dplyr arrange
 #'
 #' @export
 format_surfaceareas <- function(waterbalance){

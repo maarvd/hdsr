@@ -3,15 +3,6 @@
 #'
 #' @param datafolder folder where all excel waterbalances are located
 #'
-#' @import readxl
-#' @import data.table
-#' @import janitor
-#' @import lubridate
-#' @import dplyr
-#' @import stringr
-#' @import terra
-#' @import sf
-#'
 #'
 #'
 #' @export
