@@ -28,6 +28,14 @@ extract_waterlevelregime <- function(filepath, waterbalance){
   #rbindlist
   result <- rbindlist(result)
 
+  #add name manually (sometimes read_excel changes all to character)
+  result$name <- c("Gemaalcapaciteit[m³/min]", "Inlaatcapaciteit[m³/min]", "Peilregime 1NA",
+                   "StartdatumNA", "Aantal dagenNA", "EinddatumNA", "Gemaalpeil[m NAP]",
+                   "Inlaatpeil[m NAP]", "Peilregime 2[1=ja, 0=nee]", "StartdatumNA",
+                   "Aantal dagenNA", "EinddatumNA", "Gemaalpeil[m NAP]", "Inlaatpeil[m NAP]",
+                   "Peilregime 3[1=ja, 0=nee]", "StartdatumNA", "EinddatumNA", "Gemaalpeil[m NAP]",
+                   "Inlaatpeil[m NAP]")
+
   #tidy
   result[, name := gsub("\\[|\\]| |NA$", "", name)]
   result[, name := tolower(name)]
@@ -36,15 +44,18 @@ extract_waterlevelregime <- function(filepath, waterbalance){
   result[, name := gsub("³", "3", name)]
   result[, name := gsub("m3/min", " (m3/min)", name)]
 
-  #extract peilregime1, peilregime2, peilregime3  (gemaalpeil aangehouden als peil)
+  #extract peilregime1, peilregime2, peilregime3
   pr1 <- list(data = result[c(4,6)],
-              peil = result[7])
+              gemaalpeil = result[7],
+              inlaatpeil = result[8])
   pr2 <- list(active = result[9],
               data = result[c(10,12)],
-              peil = result[13])
+              gemaalpeil = result[13],
+              inlaatpeil = result[14])
   pr3 <- list(active = result[15],
               data = result[c(16,17)],
-              peil = result[18])
+              gemaalpeil = result[18],
+              inlaatpeil = result[19])
 
   #convert to peilregime
   if(pr2$active$value == 1){
@@ -53,20 +64,26 @@ extract_waterlevelregime <- function(filepath, waterbalance){
       peilregime <- data.table(startdag = c(pr1$data[name == "startdatum"]$value,
                                             pr2$data[name == "startdatum"]$value,
                                             pr3$data[name == "startdatum"]$value),
-                               `gemaalpeil (mnap)` = c(pr1$peil$value,
-                                                       pr2$peil$value,
-                                                       pr3$peil$value))
+                               `gemaalpeil (mnap)` = c(pr1$gemaalpeil$value,
+                                                       pr2$gemaalpeil$value,
+                                                       pr3$gemaalpeil$value),
+                               `inlaatpeil (mnap)` = c(pr1$inlaatpeil$value,
+                                                       pr2$inlaatpeil$value,
+                                                       pr3$inlaatpeil$value))
     } else{
       #twee peilregimes
       peilregime <- data.table(startdag = c(pr1$data[name == "startdatum"]$value,
                                             pr2$data[name == "startdatum"]$value),
-                               `gemaalpeil (mnap)` = c(pr1$peil$value,
-                                                       pr2$peil$value))
+                               `gemaalpeil (mnap)` = c(pr1$gemaalpeil$value,
+                                                       pr2$gemaalpeil$value),
+                               `inlaatpeil (mnap)` = c(pr1$inlaatpeil$value,
+                                                       pr2$inlaatpeil$value))
     }
   } else{
     #1 peilregime
     peilregime <- data.table(startdag = pr1$data[name == "startdatum"]$value,
-                             `gemaalpeil (mnap)` = pr1$peil$value)
+                             `gemaalpeil (mnap)` = pr1$gemaalpeil$value,
+                             `inlaatpeil (mnap)` = pr1$inlaatpeil$value)
   }
 
   #save
