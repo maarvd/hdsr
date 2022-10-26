@@ -1,12 +1,12 @@
 Package: hdsr
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Extract data from HDSR waterbalances and prep to Artesia format
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: Maarten van Doorn
+Maintainer: Maarten van Doorn <maarten.vandoorn@nmi-agro.nl>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: None
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/maarvd/hdsr
