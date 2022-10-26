@@ -4,11 +4,9 @@
 \alias{create_seepage}
 \title{Mask seepage raster to area waterbalance of interest (run create_afvoershape first)}
 \usage{
-create_seepage(rast, waterbalance)
+create_seepage(waterbalance)
 }
 \arguments{
-\item{rast}{raster of LHM4.1 seepage}
-
 \item{waterbalance}{code of waterbalance (e.g. KRWO_04_Kockengen)}
 }
 \description{

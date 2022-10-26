@@ -7,7 +7,7 @@
 create_afvoershape(sf, waterbalance)
 }
 \arguments{
-\item{sf}{shapefile containing all afvoergebieden}
+\item{sf}{shapefile containing all afvoergebieden (retrieve from data(afvoergebieden))}
 
 \item{waterbalance}{code of waterbalance (e.g. KRWO_04_Kockengen)}
 }
