@@ -32,12 +32,16 @@ extract_surfaceareas <- function(filepath, waterbalance){
     x <- x[unit == "m2"]
     x <- x[name %in% c("averhard", "averhardgerioleerd", "aonverhard") & unit == "m2"]
 
-    #create averhardongerioleerd
+    #calc verhard oppervlak not connected to sewage system (assuming mixed sewage system)
     x <- rbind(x, data.table(name = "averhardongerioleerd",
                              unit = "m2",
                              value = as.numeric(NA)))
     x[name == "averhardongerioleerd", value := x[name == "averhard"]$value - x[name == "averhardgerioleerd"]$value]
     x <- x[name != "averhard"]
+
+    #tidy names to equal format of artesia
+    x[name == "averhardongerioleerd", name := "averhard"]
+    x[name == "averhardgerioleerd", name := "ariool"]
 
     #return
     return(x)
