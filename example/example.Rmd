@@ -1,0 +1,194 @@
+---
+title: "Example converting HDSR waterbalance to format of AGV python module"
+author: "Maarten van Doorn"
+date: "2022-11-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Introductie
+
+Dit document geeft een voorbeeld voor de HDSR water- en stoffenbalans "KRWO_04_Kockengen". Relevante data wordt uitgelezen en in het format gezet voor de python-module van AGV. Dit bestaat uit de volgende stappen:
+
+Eerst pakken we de (gecomprimeerde) waterbalans uit om de balans te kunnen openen en laden we de package in.
+
+```{r extract, echo=FALSE, message=FALSE}
+#unzip waterbalance
+if(!file.exists("waterbalansen/KRWO_04_Kockengen.xls")) {
+  unzip(zipfile = "waterbalansen/KRWO_04_Kockengen.zip",
+        exdir = "waterbalansen/")
+}
+#load libraries
+library(hdsr)
+library(readxl)
+library(ggplot2)
+library(sf)
+library(terra)
+library(ggspatial)
+library(data.table)
+```
+
+# 2. Data uit excel halen
+
+## 2.1 Mappen structuur opzetten
+
+Elke waterbalans krijg een eigen map waar de data op een gestructureerde manier wordt opgeslagen. Dit wordt uitgevoerd met de functie `set_folderstructure(datafolder)`. `datafolder` is een map waar de water- en stoffenbalansen in staan (in de format KRWO_nummer_naam).
+
+```{r folderstructure, message=FALSE, warning=FALSE, include=FALSE}
+set_folderstructure(datafolder = "waterbalansen")
+```
+
+Nu zien we inderdaad dat er een mappenstructuur is aangemaakt voor het opslaan van de waterbalans data van KRWO_04_Kockengen. Specifiek is er voor de waterbalans een map `raw` waar de ruwe data wordt opgeslagen, `formatted` waar de bewerkte data (ruwe data naar python-module format) wordt opgeslagen en `spatial` waar ruimtelijke data wordt opgeslagen (bijvoorbeeld de polygoon van het afvoergebied).
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+data.table(folder = list.dirs("output/", recursive = TRUE))
+```
+
+## 2.2 Ophalen ruwe data
+
+Met functies die beginnen met `extract_` wordt ruwe data uit de excel-balans opgeslagen in de map `raw`. Zie `?naamvanfunctie` voor documentatie. Belangrijk is dat:
+
+-   Voor het ophalen van de data uit het tabblad "metingen" moet R weten uit hoeveel rijen het tabblad bestaat.
+
+-   Dat als eerst data van de oppervlakten uit excel wordt gehaald. Dit omdat bij deze functie de namen van de bakjes worden bepaald
+
+```{r raw, message=FALSE, warning=FALSE, include=FALSE}
+#set filepath and waterbalance
+filepath <- "waterbalansen/KRWO_04_Kockengen.xls"
+waterbalance <- "KRWO_04_Kockengen"
+
+#check nr of rows of metingen tabblad
+metingen_rownr <- suppressMessages(nrow(read_excel(filepath, sheet = "Metingen")))
+
+#oppervlakten
+extract_surfaceareas(filepath = filepath, waterbalance = waterbalance)
+
+#precipitation timeseries
+extract_precipitation_timeseries(filepath = filepath, metingen_rownr = metingen_rownr, waterbalance = waterbalance)
+
+#waterquality timeseries
+extract_waterquality_timeseries(filepath = filepath, metingen_rownr = metingen_rownr, waterbalance = waterbalance)
+
+#in-outlet timeseries
+extract_inoutlet_timeseries(filepath = filepath, metingen_rownr = metingen_rownr, waterbalance = waterbalance)
+
+#waterlevel timeseries
+extract_waterlevel_timeseries(filepath = filepath, metingen_rownr = metingen_rownr, waterbalance = waterbalance)
+
+#groundwaterlevel timeseries
+extract_groundwaterlevels_timeseries(filepath = filepath, metingen_rownr = metingen_rownr, waterbalance = waterbalance)
+
+#waterlevel regime settings
+extract_waterlevelregime(filepath = filepath, waterbalance = waterbalance)
+
+#pumpingstation capacity settings
+extract_pumpingstationcapacity(filepath = filepath, waterbalance = waterbalance)
+
+#other small settings
+extract_other(filepath = filepath, waterbalance = waterbalance)
+```
+
+De ruwe data is opgeslagen in de map `raw`. Als voorbeeld wordt hieronder de output voor de oppervlakten weergeven. Dit bestaat uit een lijst met drie onderdelen (oppervlakten_area1, oppervlakten_area2 en oppervlakten_water).
+
+```{r show rawfiles, echo=FALSE, message=FALSE, warning=FALSE}
+#list files
+list.files("output/KRWO_04_Kockengen/raw")
+
+#show example for oppervlakten
+opp <- readRDS("output/KRWO_04_Kockengen/raw/opp.RDS")
+opp
+```
+
+## 2.3 Ophalen ruimtelijke data
+
+Naast data uit de excel-sheets is ruimtelijke data ook relevant. Met de polygoon van een afvoergebied kan theoretisch gezien veel ruimtelijke input-data worden opgehaald. In de huidige package ligt hier niet de focus op, maar wel wordt het ruimtelijke polygoon van het afvoergebied opgeslagen en wordt kwel-infiltratie data opgehaald uit het NHI dataportaal. Dit om een standaard waarde te kunnen geven van kwel/infiltratie in de settings.
+
+```{r create spatial, message=FALSE, include=FALSE}
+#create afvoershape and save to spatial
+create_afvoershape(sf = afvoergebieden, waterbalance = "KRWO_04_Kockengen", check = FALSE)
+
+#use afvoershape to create seepage shape
+create_seepage(waterbalance = "KRWO_04_Kockengen")
+```
+
+Good to visualize (in QGIS or other program) if the spatial shape is correct
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#read afvoershape
+relshape <- st_read("output/KRWO_04_Kockengen/spatial/shape.gpkg", quiet = TRUE)
+
+#plot
+ggplot(afvoergebieden) + geom_sf(fill = "white", col ="black") + geom_sf(data = relshape, fill = 'red') + ggtitle("KRWO_04_Kockengen") + theme_bw()
+
+#read seepage raster
+seep <- terra::rast("output/KRWO_04_Kockengen/spatial/LHM4.1_seepinf_2011-2018_mmday.tiff")
+
+#plot
+ggplot() + ggspatial::layer_spatial(seep) + geom_sf(data = relshape, fill = NA, col = "white") + scale_fill_viridis_c() + theme_bw()
+```
+
+# 3 Omzetten naar python-module format
+
+Nu de ruwe en ruimtelijke data klaarstaat is de volgende stap om de data te herstructureren naar de format van de python-module. Dit gebeurt met de functies die beginnen met `format_` . De python-module werkt met de volgende .csv's:
+
+-   opp. Hier staan de oppervlakten in van de bakjes.
+
+-   param. Dit gaat met name om draaiknoppen in het "uitgangspunten" tabblad in het AGV model.
+
+-   reeks. Dit gaat om fluxen en debieten zonder metingen. Denk aan het peilregime, kwel/wegzijging en handmatig ingestelde inlaten.
+
+-   series_chloride. Dit gaat om tijdreeksen van gemeten chlorideconcentraties bij inlaten, uitlaten en de polder.
+
+-   series_fosfor. Dit gaat om tijdreeksen van gemeten fosforconcentraties bij inlaten, uitlaten en de polder.
+
+-   series. Dit gaat om tijdreeksen van debieten (zoals neerslag, verdamping inlaten en uitlaten)
+
+-   stoffen_chloride. Dit gaat om aangenomen chlorideconcentraties van de posten.
+
+-   stoffen_fosfor. Dit gaat om aangenomen fosforconcentraties van de posten.
+
+Deze .csv's worden klaargezet. Noemenswaardig is dat voor veel parameters (vooral in param) data onbekend is. Het AGV model heeft immers andere draaiknoppen als het HDSR model (bijv. fractie_uitspoeling die niet in het HDSR model staat beschreven). Tuning van de water- en stoffenbalansen is nog nodig.
+
+```{r format, message=FALSE, warning=FALSE, include=FALSE}
+#set waterbalance
+waterbalance <- "KRWO_04_Kockengen"
+
+#opp
+format_surfaceareas(waterbalance = waterbalance)
+
+#param
+format_param(waterbalance = waterbalance)
+
+#reeks
+
+#series_chloride
+format_series_chloride(waterbalance = waterbalance)
+
+#series_fosfor
+format_series_phosphorus(waterbalance = waterbalance)
+
+#series
+
+
+#stoffen_chloride
+
+
+#stoffen_fosfor
+
+```
+
+The data can now be used in the python-module. To visualize how the data looks like now:
+
+```{r visualize prepped data, echo=FALSE, message=FALSE, warning=FALSE}
+#list files in formatted output
+filelist <- list.files("output/KRWO_04_Kockengen/formatted/", pattern = ".csv$", full.names = TRUE)
+
+#read
+prepped <- lapply(filelist, fread)
+
+#show first rows
+lapply(prepped, head, 10)
+```
