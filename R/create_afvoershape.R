@@ -6,12 +6,13 @@
 #'
 #' @import data.table
 #' @import ggplot2
+#' @importFrom ggspatial annotation_map_tile
 #' @importFrom sf st_transform st_as_sf st_write
 #' @importFrom ggspatial annotation_map_tile
 #' @importFrom gridExtra grid.arrange
 #'
 #' @export
-create_afvoershape <- function(sf, waterbalance, check){
+create_afvoershape <- function(sf, waterbalance){
   #load afvoer.shape
   afvoer.shape <- sf |> st_transform(28992) |> as.data.table()
 
@@ -22,27 +23,18 @@ create_afvoershape <- function(sf, waterbalance, check){
   #select rel shape
   rel.shape <- afvoer.shape[afgb_id == waterbalans.id] |> st_as_sf()
 
-  #if check is desired
-  if(check == TRUE){
-    #new dev
-    print(dev.new(1))
+  #visualize
+  plot1 <- ggplot(afvoergebieden) + geom_sf(fill = "white") + theme_void() +
+    geom_sf(data = rel.shape, fill = "red")
 
-    #visualize
-    plot1 <- ggplot(afvoergebieden) + geom_sf(fill = "white") + theme_void() +
-      geom_sf(data = rel.shape, fill = "red")
+  plot2 <- ggplot(rel.shape) + ggspatial::annotation_map_tile() + geom_sf(fill = NA, col = "red", linetype = "dashed", size = 1) + theme_void()
 
-    plot2 <- ggplot(rel.shape) + ggspatial::annotation_map_tile() + geom_sf(fill = NA, col = "red", linetype = "dashed", size = 1) + theme_void()
+  #write files
+  #shape
+  st_write(rel.shape, dsn = paste0("output/", waterbalance, "/spatial/shape.gpkg"), append = FALSE)
 
-    gridExtra::grid.arrange(plot1, plot2, ncol = 2, nrow = 1)
+  #plots
+  ggsave(filename = paste0("output/", waterbalance, "/spatial/shape overzicht.png"), plot = plot1, height = 20, width = 20, units = "cm")
+  ggsave(filename = paste0("output/", waterbalance, "/spatial/shape detail.png"), plot = plot2, height = 20, width = 20, units = "cm")
 
-    if(askYesNo(msg = paste0("Shapefile ", rel.shape$naam, " geselecteerd voor waterbalans ", waterbalance, ". Klopt dit?")) == TRUE){
-
-      #save shape
-      st_write(rel.shape, dsn = paste0("output/", waterbalance, "/spatial/shape.gpkg"), append = FALSE)
-    } else{
-      warning(paste0("Geen ruimtelijk bestand opgeslagen voor waterbalans ", waterbalance))
-    }
-  } else if(check == FALSE){
-    st_write(rel.shape, dsn = paste0("output/", waterbalance, "/spatial/shape.gpkg"), append = FALSE)
-  }
 }
