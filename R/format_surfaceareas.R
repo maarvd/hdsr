@@ -15,8 +15,8 @@ format_surfaceareas <- function(waterbalance){
   opp <- rbindlist(opp, idcol = TRUE)[, c("name", "value", ".id")]
 
   #tidy names
-  opp[name == "averhardgerioleerd", name := "vh_rio"]
-  opp[name == "averhardongerioleerd", name := "vh"]
+  opp[name == "ariool", name := "vh_rio"]
+  opp[name == "averhard", name := "vh"]
   opp[name == "aonverhardgedraineerd", name := "oo_drain"]
   opp[name == "aonverhardongedraineerd", name := "oo"]
   opp[name == "awater", name := "wa"]
@@ -37,6 +37,7 @@ format_surfaceareas <- function(waterbalance){
   opp[grepl("OnverhardOngedraineerd", BakjeOmschrijving), BakjePyCode := "Onverhard"]
   opp[grepl("OnverhardGedraineerd", BakjeOmschrijving), BakjePyCode := "Drain"]
   opp[grepl("VerhardOngerioleerd", BakjeOmschrijving), BakjePyCode := "Verhard"]
+  opp[grepl("Gerioleerd", BakjeOmschrijving) & !grepl("Ongerioleerd", BakjeOmschrijving), BakjePyCode := "MengRiool"]
   opp[grepl("Water", BakjeOmschrijving), BakjePyCode := "Water"]
 
   #set names
@@ -48,6 +49,14 @@ format_surfaceareas <- function(waterbalance){
 
   #select rel columns in rel order
   opp <- opp[, c("EAGID", "EAGCode", "BakjeID", "BakjeOmschrijving", "BakjePyCode", "OppWaarde")]
+
+  #combine 'verhard', 'drain' and 'mengrio' (multiple areas are aggregated in waterbalance)
+  verhard <- data.table(EAGID = waterbalance, EAGCode = waterbalance, BakjeID = "vh", BakjeOmschrijving = "VerhardOngerioleerd", BakjePyCode = "Verhard", OppWaarde = sum(opp[BakjePyCode == "Verhard"]$OppWaarde))
+  drain <- data.table(EAGID = waterbalance, EAGCode = waterbalance, BakjeID = "Drain", BakjeOmschrijving = "OnverhardGedraineerd", BakjePyCode = "Drain", OppWaarde = sum(opp[BakjePyCode == "Drain"]$OppWaarde))
+  mengrio <- data.table(EAGID = waterbalance, EAGCode = waterbalance, BakjeID = "rio", BakjeOmschrijving = "VerhardGerioleerd", BakjePyCode = "MengRiool", OppWaarde = sum(opp[BakjePyCode == "MengRiool"]$OppWaarde))
+
+
+  opp <- rbind(opp[!BakjePyCode %in% c("MengRiool", "Verhard", "Drain")], verhard, drain, mengrio)
 
   #arrange
   opp <- arrange(opp, opp$BakjeOmschrijving) |> as.data.table()
