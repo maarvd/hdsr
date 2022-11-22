@@ -37,7 +37,7 @@ format_param <- function(waterbalance){
   #onverhard gedraineerd----
   #select rel bakjes
   bakjes.oo_drain <-
-    opp_formatted$BakjeID[grepl("^oo_drain", opp_formatted$BakjeID)]
+    opp_formatted$BakjeID[grepl("^Drain", opp_formatted$BakjeID)]
 
   #create empty data.table with rel params
   params.drain <- lapply(
@@ -82,7 +82,7 @@ format_param <- function(waterbalance){
 
   #onverhard ongedraineerd----
   #select rel bakjes
-  bakjes.oo <- opp_formatted$BakjeID[grepl("^oo_", opp_formatted$BakjeID) & !grepl("drain", opp_formatted$BakjeID)]
+  bakjes.oo <- opp_formatted$BakjeID[grepl("^oo_", opp_formatted$BakjeID) & !grepl("Drain", opp_formatted$BakjeID)]
 
   #create empty data.table with rel params
   params.onverhard <- lapply(
